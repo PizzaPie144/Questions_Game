@@ -1,0 +1,30 @@
+{
+  "category": 0,
+  "QnADatas": [
+    {
+      "question": "AAAAAAAAAAAA?",
+      "rightAnswer": "gigbhun",
+      "wrongAnswer": [ "aaaa", "bbbb", "cccc" ]
+    },
+    {
+      "question": "BBBBBBBBBBBBBB?",
+      "rightAnswer": "fdsgsgs",
+      "wrongAnswer": [ "aaa", "bbb", "ccc" ]
+    },
+    {
+      "question": "CCCCCCCCCCCCCC?",
+      "rightAnswer": "fdsgsgs",
+      "wrongAnswer": [ "aaa", "bbb", "ccc" ]
+    },
+    {
+      "question": "DDDDDDDDDDDDDDD?",
+      "rightAnswer": "fdsgsgs",
+      "wrongAnswer": [ "aaa", "bbb", "ccc" ]
+    },
+    {
+      "question": "FFFFFFFFFFFFFF?",
+      "rightAnswer": "fdsgsgs",
+      "wrongAnswer": [ "aaa", "bbb", "ccc" ]
+    }
+  ]
+}
