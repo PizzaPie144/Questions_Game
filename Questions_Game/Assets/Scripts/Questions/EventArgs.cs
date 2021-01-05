@@ -30,15 +30,25 @@ namespace PizzaPie.Questions
         }
     }
 
-    public class AnswerPickedSequence : EventArgs
+    public class AfterAnswerPickedEventArgs : EventArgs
     {
         public bool IsRight { get; private set; }
-        public PizzaPie.Unity.Utils.SequenceLoader SequenceLoader { get; private set; }
 
-        public AnswerPickedSequence(bool isRight, Unity.Utils.SequenceLoader sequence)
+        public AfterAnswerPickedEventArgs(bool isRigth)
+        {
+            IsRight = isRigth;
+        }
+    }
+
+    public class AnswerPickedCoccurentEventArgs : EventArgs
+    {
+        public bool IsRight { get; private set; }
+        public PizzaPie.Unity.Utils.CocurrentRoutineHandler CocurrentRoutineHandler { get; private set; }
+
+        public AnswerPickedCoccurentEventArgs(bool isRight, Unity.Utils.CocurrentRoutineHandler cocurrentRoutineHandler)
         {
             IsRight = isRight;
-            SequenceLoader = sequence;
+            CocurrentRoutineHandler = cocurrentRoutineHandler;
         }
     }
 

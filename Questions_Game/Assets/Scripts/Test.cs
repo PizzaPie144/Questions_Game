@@ -7,15 +7,15 @@ public class Test : MonoBehaviour
 {
     private void Start()
     {
-        SequenceLoader sequenceLoader = new SequenceLoader();
 
-        sequenceLoader.AddEnumerator(AAA());
-        sequenceLoader.AddEnumerator(BBB());
-        sequenceLoader.AddEnumerator(CCC());
-        sequenceLoader.AddEnumerator(DDD());
+        
 
-        sequenceLoader.Run();
+    }
 
+    bool SSS(int mInt)
+    {
+        Debug.Log(mInt);
+        return true;
     }
 
     IEnumerator AAA()

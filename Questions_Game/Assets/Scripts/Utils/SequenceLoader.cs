@@ -27,7 +27,7 @@ namespace PizzaPie.Unity.Utils
             enumerators.Remove(enumerator);
         }
 
-        public void Run()
+        public void Start()
         {
             coroutinesHandler.StartCoroutine(SequenceRoutine(enumerators.ToArray()));
         }

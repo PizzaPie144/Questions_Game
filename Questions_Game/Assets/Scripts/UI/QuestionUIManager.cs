@@ -20,7 +20,7 @@ namespace PizzaPie.UI
         [SerializeField]
         private Color wrongAnswerColor;
         [SerializeField]
-        private float falshDelay = 0.5f;
+        private float flashDelay = 0.5f;
         [SerializeField]
         private int flashRepeats = 8;
 
@@ -30,6 +30,12 @@ namespace PizzaPie.UI
         {
             defaultColorBlock = answersButtons[0].colors;
             //disable on start
+            Services.Instance.EventAggregator.Subscribe<BeforeQuestionSelected>(this);
+        }
+
+        void OnDestroy()
+        {
+            Services.Instance.EventAggregator.Unsubscribe<BeforeQuestionSelected>(this);
         }
 
         public void Handler(object sender, BeforeQuestionSelected e)
@@ -48,24 +54,22 @@ namespace PizzaPie.UI
 
                 answersButtons[index].GetComponentInChildren<Text>().text = ans;
                 var tempIndexA = index;
-                answersButtons[index].onClick.AddListener(() => OnAnswerPicked(false, answersButtons[tempIndexA]));
+                answersButtons[index].onClick.AddListener(() => OnAnswerPicked(false, tempIndexA));
             }
 
             answersButtons[indexes[0]].GetComponentInChildren<Text>().text = e.QnA.RightAnswer;
             var tempIndexB = indexes[0];
-            answersButtons[indexes[0]].onClick.AddListener(() => OnAnswerPicked(true, answersButtons[tempIndexB]));
+            answersButtons[indexes[0]].onClick.AddListener(() => OnAnswerPicked(true, tempIndexB));
         }
 
 
-        void OnAnswerPicked(bool isRight, Button button)
+        void OnAnswerPicked(bool isRight, int  buttonIndex)
         {
-            Services.Instance.EventAggregator.Invoke(this, new BeforeAnswerPickedEventArgs(isRight));
-
-            var sequence = new Unity.Utils.SequenceLoader(Disable);
             var color = isRight ? rightAnswerColor : wrongAnswerColor;
-            sequence.AddEnumerator(ButtonFlash(button, color, falshDelay, flashRepeats));
+            var coccurentHandler = new Unity.Utils.CocurrentRoutineHandler(Disable,true, Utils.ButtonFlash(answersButtons[buttonIndex],defaultColorBlock, color, flashDelay, flashRepeats));
 
-            Services.Instance.EventAggregator.Invoke(this, new AnswerPickedSequence(isRight, sequence));
+            Services.Instance.EventAggregator.Invoke(this,new AnswerPickedCoccurentEventArgs(isRight, coccurentHandler));
+            coccurentHandler.Start();
         }
 
         void Disable()
@@ -83,24 +87,6 @@ namespace PizzaPie.UI
             }
         }
 
-        IEnumerator ButtonFlash(Button button, Color color, float delay, int repeats)
-        {
-            ColorBlock colorBlock = defaultColorBlock;
-            var defaultColor = colorBlock.normalColor;
-            for (int i = 0; i < repeats; i++)
-            {
-                var t = i % 2 == 1 ? delay : 0f;
-                do
-                {
-                    t = i % 2 == 1 ? t - Time.deltaTime : t + Time.deltaTime;
-                    var targetColor = Vector4.Lerp(defaultColor, color, t / delay);
-                    colorBlock.normalColor = targetColor;
-
-                    button.colors = colorBlock;
-
-                    yield return null;
-                } while (t <= delay && t >= 0);
-            }
-        }
+        
     }
 }
