@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PizzaPie.Wheel
 {
-    public class WheelManager : MonoBehaviour, ISubscriber<GameStartsEventArgs>
+    public class WheelManager : MonoBehaviour, ISubscriber<GameStartsEventArgs>, ISubscriber<StopWheelButtonEventArgs>
     {
         [SerializeField]
         private float spinSpeed;
@@ -22,17 +22,22 @@ namespace PizzaPie.Wheel
         private int pixelsPerUnit = 200;
         [SerializeField]
         private Color tintColor;
+        [SerializeField]
+        private float exitDelay;
 
-        public bool stop;
+        private bool stop;
 
         private SpriteRenderer spriteRenderer;
         private Material mat;
         private Texture2D texture;
         private int size;
 
+        private List<Questions.QuestionCategory> categories;
+        
         private const string TARGET_COLOR = "_TargetColor";
         private const string TINT_COLOR = "_ColorTint";
 
+        //DEBUG (remove)
         List<float> percentages = new List<float>() { 0.2f, 0.1f, 0.15f, 0.1f, 0.2f, 0.05f, 0.2f };
         List<Color> colors = new List<Color>() { Color.red, Color.magenta, Color.gray, Color.cyan, Color.green, Color.yellow, Color.blue };
 
@@ -42,9 +47,11 @@ namespace PizzaPie.Wheel
             mat = spriteRenderer.material;
             Init();
             wheel.SetActive(false);
-
-            Handler(null, null);
+            Services.Instance.EventAggregator.Subscribe<GameStartsEventArgs>(this);
+            Services.Instance.EventAggregator.Subscribe<StopWheelButtonEventArgs>(this);
         }
+
+        
 
         private void Init()
         {
@@ -55,24 +62,22 @@ namespace PizzaPie.Wheel
 
         #region Event Handlers
 
-
         public void Handler(object sender, GameStartsEventArgs e)
         {
-            //move to prior event
-            //List<Color> colors;
-            //List<float> percentages = GeneratePercentages(Services.Instance.QuestionsProvider.GetQuestionsRemainingCounts(), out colors);
-            UpdateTexture(percentages, colors);
-            //end
+            wheel.transform.eulerAngles = Vector3.zero;
+            stop = false;
+            List<Color> colors;
+            var percentages =  GeneratePercentages(Services.Instance.QuestionsProvider.GetQuestionsRemainingCounts(), out colors);
 
+            UpdateTexture(percentages, colors);
             wheel.SetActive(true);
             StartCoroutine(SpinRoutine(percentages, colors));
-
-            //enable (texture should already been generated
-            //start spinning?
-            //activate button to stop
-            //update the color to be highlited
         }
 
+        public void Handler(object sender, StopWheelButtonEventArgs e)
+        {
+            stop = true;
+        }
 
         #endregion
 
@@ -80,6 +85,7 @@ namespace PizzaPie.Wheel
         {
             var angle = -180f;
             var spinSpeed = this.spinSpeed;
+            int currentIndex = 0;
 
             while (spinSpeed >= 0.1f)
             {
@@ -91,8 +97,6 @@ namespace PizzaPie.Wheel
 
                 var minAngle = 0f;
                 var maxAngle = 0f;
-
-                int currentIndex;
                 
                 for (int i = 0; i < percentages.Count; i++)
                 {
@@ -105,19 +109,32 @@ namespace PizzaPie.Wheel
                         break;
                     }
                 }
-
                 angle %= 360;
-                yield return new WaitForSeconds(0.5f);  
-
-                //invoke the BeforeSelected Event 
+                yield return null;
 
             }
+
+            yield return new WaitForSeconds(exitDelay);
+
+            var cocurrentRoutine = new Unity.Utils.CocurrentRoutineHandler();
+            cocurrentRoutine.AddOnFinishCallback(OnExit);
+
+            Services.Instance.EventAggregator.Invoke(this, new WheelStopSpinEventArgs(categories[currentIndex], cocurrentRoutine));
+            cocurrentRoutine.Start();
+        }
+
+        private void OnExit()
+        {
+            wheel.gameObject.SetActive(false);
         }
 
         private List<float> GeneratePercentages(Dictionary<Questions.QuestionCategory,int> remainingQuestionsCounts, out List<Color> colors)
         {
             float total = 0;
             List<float> percentages = new List<float>();
+            
+            categories = new List<Questions.QuestionCategory>();
+
             colors = new List<Color>();
             
             foreach (var remaining in remainingQuestionsCounts.Values)
@@ -126,6 +143,8 @@ namespace PizzaPie.Wheel
             foreach(var kvp in remainingQuestionsCounts)
             {
                 colors.Add(Services.Instance.QuestionsProvider.GetCategoryDefinition(kvp.Key).Color);
+                categories.Add(kvp.Key);
+
                 if(total != 0)
                     percentages.Add(kvp.Value / total);
             }
@@ -208,9 +227,6 @@ namespace PizzaPie.Wheel
 
             return tex;
         }
-
-        
-
         #endregion
     }
 }

@@ -8,13 +8,13 @@ namespace PizzaPie.Questions
     {
         public QuestionCategory Category { get; private set; }
         public Color Color { get; private set; }
-        public Texture Texture { get; private set; }
+        public Sprite Sprite { get; private set; }
         
-        public CategoryDefinition(QuestionCategory category ,Color color, Texture texture)
+        public CategoryDefinition(QuestionCategory category ,Color color, Sprite sprite)
         {
             Category = category;
             Color = color;
-            Texture = texture;
+            Sprite = sprite;
         }
 
     }

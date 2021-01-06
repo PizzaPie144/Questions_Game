@@ -6,7 +6,7 @@ namespace PizzaPie.Unity.Utils
 {
     public class SequenceLoader
     {
-        private CouroutinesHandler coroutinesHandler;
+        private CoroutinesHandler coroutinesHandler;
         private List<IEnumerator> enumerators = new List<IEnumerator>();
         private System.Action OnFinish;
         private bool disposeOnFinish;
@@ -14,9 +14,16 @@ namespace PizzaPie.Unity.Utils
 
         public SequenceLoader(System.Action OnFinish = null, bool disposeOnFinish = true)
         {
-            coroutinesHandler = CouroutinesHandler.Init();
+            coroutinesHandler = CoroutinesHandler.Create();
+            this.OnFinish += OnFinish;
+            this.disposeOnFinish = disposeOnFinish;
         }
 
+        public void AddOnFinishAction(System.Action OnFinish)
+        {
+            this.OnFinish += OnFinish;
+        }
+        
         public void AddEnumerator(IEnumerator enumerator)
         {
             enumerators.Add(enumerator);

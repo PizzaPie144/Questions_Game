@@ -2,12 +2,12 @@
 
 namespace PizzaPie.Unity.Utils
 {
-    public class CouroutinesHandler : MonoBehaviour
+    public class CoroutinesHandler : MonoBehaviour
     {
-        public static CouroutinesHandler Init()
+        public static CoroutinesHandler Create()
         {
             var go = new GameObject("Coroutines Handler");
-            return go.AddComponent<CouroutinesHandler>();
+            return go.AddComponent<CoroutinesHandler>();
         }
 
         public void Dispose()

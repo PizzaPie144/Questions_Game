@@ -1,0 +1,30 @@
+{
+  "category": 1,
+  "QnADatas": [
+    {
+      "question": "What was the name of the group Justin Timberlake used to be part of?",
+      "rightAnswer": "N SYNC",
+      "wrongAnswer": [ "Iron Maiden", "Rammstein" ]
+    },
+    {
+      "question": "What was the name of the rock band formed by Jimmy Page?",
+      "rightAnswer": "Led Zeppelin",
+      "wrongAnswer": [ "Rolling stones", "The doors" ]
+    },
+    {
+      "question": "Which country did AC DC originate in?",
+      "rightAnswer": "Australia",
+      "wrongAnswer": [ "England", "USA" ]
+    },
+    {
+      "question": "Which name is rapper Sean Combs better known by?",
+      "rightAnswer": "P. Diddy",
+      "wrongAnswer": [ "C. Diddy", "S. Diddy" ]
+    },
+    {
+      "question": "How many Grammys does John Legend have?",
+      "rightAnswer": "Ten",
+      "wrongAnswer": [ "Five", "None" ]
+    }
+  ]
+}

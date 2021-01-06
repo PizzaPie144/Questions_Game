@@ -14,7 +14,8 @@ namespace PizzaPie.Questions.Serialization
 
         public T Deserialize<T>(string json)
         {
-            return JsonUtility.FromJson<T>(json);
+            var obj = JsonUtility.FromJson<T>(json);
+            return obj;
         }
 
         public string Serialize(object obj)

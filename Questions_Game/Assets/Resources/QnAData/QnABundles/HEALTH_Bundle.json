@@ -1,0 +1,30 @@
+{
+  "category": 6,
+  "QnADatas": [
+    {
+      "question": "Which organ has four chambers?",
+      "rightAnswer": "The heart",
+      "wrongAnswer": [ "The lung", "The brain" ]
+    },
+    {
+      "question": "Which bone are babies born without?",
+      "rightAnswer": "Knee cap",
+      "wrongAnswer": [ "Pelvic bone", "Tail bone" ]
+    },
+    {
+      "question": "About how many taste buds does the average human tongue have?",
+      "rightAnswer": "10,000",
+      "wrongAnswer": [ "5,000", "7,000" ]
+    },
+    {
+      "question": "What percentage of our bodies is made up of water?",
+      "rightAnswer": "60-65%",
+      "wrongAnswer": [ "70-75%", "65-70%" ]
+    },
+    {
+      "question": "How many times does the heartbeat per day?",
+      "rightAnswer": "More than 100,000",
+      "wrongAnswer": [ "More than 70,000", "More than 20,000" ]
+    }
+  ]
+}

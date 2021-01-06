@@ -28,12 +28,12 @@ namespace PizzaPie
 
         public bool IsLose(int wrongAnswersCount)
         {
-            return wrongAnswersCount >= maxWrongAnswers;
+            return wrongAnswersCount > maxWrongAnswers;
         }
 
         public bool IsWin(int rightAnswersCount)
         {
-            return rightAnswersCount >= maxRightAnswers;
+            return rightAnswersCount > maxRightAnswers;
         }
 
         public int CompareTo(DifficultyDefinition other)

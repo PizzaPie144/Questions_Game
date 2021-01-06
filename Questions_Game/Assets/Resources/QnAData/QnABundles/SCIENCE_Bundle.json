@@ -1,0 +1,30 @@
+{
+  "category": 3,
+  "QnADatas": [
+    {
+      "question": "What part of the atom has no electric charge?",
+      "rightAnswer": "Neutron",
+      "wrongAnswer": [ "Proton", "Electron" ]
+    },
+    {
+      "question": "What is the symbol for potassium?",
+      "rightAnswer": "K",
+      "wrongAnswer": [ "P", "H" ]
+    },
+    {
+      "question": "Which planet is the hottest in the solar system?",
+      "rightAnswer": "Venus",
+      "wrongAnswer": [ "Saturn", "Mars" ]
+    },
+    {
+      "question": "How many molecules of oxygen does ozone have?",
+      "rightAnswer": "3",
+      "wrongAnswer": [ "1", "4" ]
+    },
+    {
+      "question": "Which planet has the most gravity?",
+      "rightAnswer": "Jupiter",
+      "wrongAnswer": [ "Earth", "Uranus" ]
+    }
+  ]
+}

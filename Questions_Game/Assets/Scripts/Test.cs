@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PizzaPie.Unity.Utils;
+using UnityEngine.UI;
 
 public class Test : MonoBehaviour
 {
+    public CanvasGroup canvasGroup;
+    public Button button;
     private void Start()
     {
 
-        
-
+        //StartCoroutine(PizzaPie.UI.Utils.CanvasGroupFade(canvasGroup, 3f, 1));
+        button.onClick.AddListener(SSS);
     }
 
-    bool SSS(int mInt)
+    void SSS()
     {
-        Debug.Log(mInt);
-        return true;
+        StartCoroutine(PizzaPie.UI.Utils.ButtonFlash(button, button.colors, Color.red, 0.5f, 10));
     }
 
     IEnumerator AAA()

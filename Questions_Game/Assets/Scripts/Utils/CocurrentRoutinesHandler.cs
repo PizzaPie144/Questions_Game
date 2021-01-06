@@ -1,25 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 namespace PizzaPie.Unity.Utils
 {
     public class CocurrentRoutineHandler
     {
-        private CouroutinesHandler coroutinesHandler;
-        private Dictionary<IEnumerator, bool> routinesRunningRecord;
+        private CoroutinesHandler coroutinesHandler;
+        List<Func<IEnumerator>> enumerators;
+        List<bool> routinesRecord;
+
+        //private Dictionary<int, bool> routinesRunningRecord;
+
 
         private bool disposeOnFinish;
+        int index = 0;
+
         private System.Action OnFinishAction;
 
-        public CocurrentRoutineHandler(System.Action OnFinishAction = null, bool disposeOnFinish = true, params IEnumerator[] routines)
+        public CocurrentRoutineHandler(System.Action OnFinishAction = null, bool disposeOnFinish = true, params Func<IEnumerator>[] routines)
         {
+            coroutinesHandler = CoroutinesHandler.Create();
             AddOnFinishCallback(OnFinishAction);
             this.disposeOnFinish = disposeOnFinish;
-
-            routinesRunningRecord = new Dictionary<IEnumerator, bool>();
+            enumerators = new List<Func<IEnumerator>>();
+            routinesRecord = new List<bool>();
             foreach (var routine in routines)
-                routinesRunningRecord.Add(routine, false);
+            {
+                enumerators.Add(routine);
+                routinesRecord.Add(false);
+
+                index++;
+            }
         }
 
         public void Start()
@@ -37,10 +49,10 @@ namespace PizzaPie.Unity.Utils
 
         private IEnumerator CoccurentMainRoutine()
         {
-            foreach (var routine in routinesRunningRecord)
-                coroutinesHandler.StartCoroutine(TrackRoutine(routine.Key));
+            for (int i = 0; i < routinesRecord.Count; i++)
+                coroutinesHandler.StartCoroutine(TrackRoutine(i));
 
-            while (GetCheckSum(routinesRunningRecord))
+            while (GetCheckSum(routinesRecord))
                 yield return null;
 
             if (OnFinishAction != null)
@@ -48,33 +60,30 @@ namespace PizzaPie.Unity.Utils
 
             if (disposeOnFinish)
                 Dispose();
+
         }
 
-        private IEnumerator TrackRoutine(IEnumerator routine)
+        private IEnumerator TrackRoutine(int index)
         {
-            routinesRunningRecord[routine] = true;
-            yield return coroutinesHandler.StartCoroutine(routine);
-            routinesRunningRecord[routine] = false;
+            routinesRecord[index] = true;
+            yield return coroutinesHandler.StartCoroutine(enumerators[index]());
+            routinesRecord[index] = false;
         }
 
-        private bool GetCheckSum(Dictionary<IEnumerator,bool> record)
+        private bool GetCheckSum(List<bool> record)
         {
-            bool sum = true;
+            bool sum = false;
             foreach (var routine in record)
-                sum |= routine.Value;
+                sum |= routine;
 
             return sum;
         }
 
-        public void AddRoutine(IEnumerator routine)
+        public void AddRoutine(Func<IEnumerator> routine)
         {
-            routinesRunningRecord.Add(routine, false);
-        }
-
-        public void RemoveRoutine(IEnumerator routine)
-        {
-            if (routinesRunningRecord.ContainsKey(routine))
-                routinesRunningRecord.Remove(routine);
+            routinesRecord.Add(false);
+            enumerators.Add(routine);
+            index++;
         }
 
         public void Abort()
@@ -82,14 +91,9 @@ namespace PizzaPie.Unity.Utils
             coroutinesHandler.StopAllCoroutines();
         }
 
-        public void Clear()
-        {
-            routinesRunningRecord.Clear();
-        }
-
         public void Dispose()
         {
-            routinesRunningRecord = null;
+            enumerators.Clear();
             coroutinesHandler.Dispose();
         }
     }

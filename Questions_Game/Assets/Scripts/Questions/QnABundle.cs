@@ -50,8 +50,8 @@ namespace PizzaPie.Questions
 
         public QnA GetNext()
         {
-            if (++position >= Lenght)       //need test
-                position = 0;               //or return null???
+            if (++position >= Lenght)       
+                position = 0;               
 
             var q = Current;
             MoveNext();

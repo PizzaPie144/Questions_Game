@@ -1,0 +1,30 @@
+{
+  "category": 2,
+  "QnADatas": [
+    {
+      "question": "What s the shortcut for the copy function on most computers?",
+      "rightAnswer": "ctrl c",
+      "wrongAnswer": [ "ctrl v", "ctrl x" ]
+    },
+    {
+      "question": "Is Java a type of OS?",
+      "rightAnswer": "No",
+      "wrongAnswer": [ "Maybe", "Yes" ]
+    },
+    {
+      "question": "What does HTTP stand for?",
+      "rightAnswer": "HyperText Transfer Protocol",
+      "wrongAnswer": [ "aaa", "aaa" ]
+    },
+    {
+      "question": "Which email service is owned by Microsoft?",
+      "rightAnswer": "Hotmail",
+      "wrongAnswer": [ "GMail", "YahooMail" ]
+    },
+    {
+      "question": "Google Chrome, Safari, Firefox, and Explorer are different types of what?",
+      "rightAnswer": "Web browsers",
+      "wrongAnswer": [ "OS", "Cleaning products" ]
+    }
+  ]
+}

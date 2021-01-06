@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SPORTS_Category
   m_EditorClassIdentifier: 
   category: 0
-  color: {r: 0.05724919, g: 1, b: 0, a: 1}
-  texture: {fileID: 0}
+  color: {r: 0.24122572, g: 0.7924528, b: 0.15325737, a: 1}
+  sprite: {fileID: 21300000, guid: 27f83d3ee77521d49b522c3c9cfad6fc, type: 3}

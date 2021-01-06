@@ -3,12 +3,12 @@
 
 namespace PizzaPie
 {
-    public class BeforeLoadEventArgs : EventArgs
+    public class LoadEventArgs : EventArgs
     {
         public PizzaPie.Unity.Utils.SequenceLoader SequenceLoader { get; private set; }
         public GameDifficulty Difficulty;
 
-        public BeforeLoadEventArgs(Unity.Utils.SequenceLoader sequenceLaoder, GameDifficulty difficulty)
+        public LoadEventArgs(Unity.Utils.SequenceLoader sequenceLaoder, GameDifficulty difficulty)
         {
             SequenceLoader = sequenceLaoder;
             Difficulty = difficulty;
@@ -25,6 +25,19 @@ namespace PizzaPie
     public class GameStartsEventArgs : EventArgs
     {
 
+    }
+
+    public class GameRestartEventArgs : EventArgs { }
+
+    public class EndGameCocurrentEventArgs : EventArgs
+    {
+        public Unity.Utils.CocurrentRoutineHandler CocurrentRoutine { get; private set; }
+        public bool IsWin { get; private set; }
+        public EndGameCocurrentEventArgs(bool isWin, Unity.Utils.CocurrentRoutineHandler cocurrentRoutine)
+        {
+            IsWin = isWin;
+            CocurrentRoutine = cocurrentRoutine;
+        }
     }
 
     public class LoseCoccurentEventArgs : EventArgs

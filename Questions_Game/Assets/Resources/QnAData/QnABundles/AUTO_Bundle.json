@@ -1,0 +1,30 @@
+{
+  "category": 4,
+  "QnADatas": [
+    {
+      "question": "Which animal can be seen on the Porsche logo?",
+      "rightAnswer": "Horse",
+      "wrongAnswer": [ "Jaguar", "Chicken" ]
+    },
+    {
+      "question": "Which company owns Bugatti, Lamborghini. Audi, Porsche, and Ducati?",
+      "rightAnswer": "Volkswagen",
+      "wrongAnswer": [ "General Motors", "Fiat Chrysler Automobiles" ]
+    },
+    {
+      "question": "What or who is the Ford Mustang named after?",
+      "rightAnswer": "A fighter plane from WWII",
+      "wrongAnswer": [ "Ford's horce", "A comercial plane from WWI" ]
+    },
+    {
+      "question": "How many parts (screws and bolts included) does the average car have?",
+      "rightAnswer": "30,000",
+      "wrongAnswer": [ "40,000", "35,000" ]
+    },
+    {
+      "question": "In what year was the Corvette introduced?",
+      "rightAnswer": "1953",
+      "wrongAnswer": [ "1958", "1951" ]
+    }
+  ]
+}

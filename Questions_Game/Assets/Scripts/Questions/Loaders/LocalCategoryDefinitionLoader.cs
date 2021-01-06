@@ -21,8 +21,8 @@ namespace PizzaPie.Questions.Loaders
 
             for (int i = 0; i < definitionContainers.Length; i++)
             {
-                definitions[i] = new CategoryDefinition(definitionContainers[i].category, definitionContainers[i].color, definitionContainers[i].texture);
-                Resources.UnloadAsset(definitionContainers[i]);
+                definitions[i] = new CategoryDefinition(definitionContainers[i].category, definitionContainers[i].color, definitionContainers[i].sprite);
+                //Resources.UnloadAsset(definitionContainers[i]);
             }
 
             OnLoadSuccess(definitions);

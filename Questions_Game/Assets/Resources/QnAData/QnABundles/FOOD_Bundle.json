@@ -1,0 +1,30 @@
+{
+  "category": 5,
+  "QnADatas": [
+    {
+      "question": "What name does deer meat go by?",
+      "rightAnswer": "Venison",
+      "wrongAnswer": [ "Beef", "Pork" ]
+    },
+    {
+      "question": "Which country produces the most coffee in the world?",
+      "rightAnswer": "Brazil",
+      "wrongAnswer": [ "Argentina", "Uruguay" ]
+    },
+    {
+      "question": "Which country invented tea?",
+      "rightAnswer": "China",
+      "wrongAnswer": [ "India", "England" ]
+    },
+    {
+      "question": "Which European nation was said to invent hot dogs?",
+      "rightAnswer": "Germany",
+      "wrongAnswer": [ "Italy", "France" ]
+    },
+    {
+      "question": "Which country is responsible for giving us pizza and pasta?",
+      "rightAnswer": "Italy",
+      "wrongAnswer": [ "Germany", "France" ]
+    }
+  ]
+}

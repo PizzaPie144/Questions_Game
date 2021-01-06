@@ -25,7 +25,8 @@ namespace PizzaPie.Questions.Loaders
 
             for (int i = 0; i < jsons.Length; i++)
             {
-                bundles[i] = jsonAdapter.Deserialize<QnABundle>(jsons[i].text);
+                var data = jsonAdapter.Deserialize<QnADataBundle>(jsons[i].text);
+                bundles[i] = new QnABundle(data);
                 Resources.UnloadAsset(jsons[i]);
             }
 

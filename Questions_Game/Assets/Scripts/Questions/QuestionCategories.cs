@@ -4,6 +4,11 @@
     public enum QuestionCategory
     {
         SPORTS,
-        CALTURE
+        CALTURE,
+        TECHNOLOGY,
+        SCIENCE,
+        AUTO,
+        FOOD,
+        HEALTH
     }
 }

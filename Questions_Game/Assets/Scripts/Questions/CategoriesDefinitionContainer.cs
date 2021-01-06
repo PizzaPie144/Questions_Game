@@ -9,9 +9,7 @@ namespace PizzaPie {
     public class CategoriesDefinitionContainer : ScriptableObject
     {
         public Questions.QuestionCategory category;
-        
         public Color color;
-
-        public Texture texture;
+        public Sprite sprite;
     }
 }

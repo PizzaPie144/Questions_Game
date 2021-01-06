@@ -9,7 +9,7 @@ using PizzaPie.Questions.Loaders;
 
 namespace PizzaPie.Questions.Providers
 {
-    public class QuestionsProvider : IQuestionsProvider, Events.ISubscriber<BeforeLoadEventArgs>
+    public class QuestionsProvider : IQuestionsProvider, Events.ISubscriber<LoadEventArgs>
     {
         private IQuestionsLoader questionsLoader;
         private ICategoryDefinitionsLoader categoriesLoader;
@@ -20,7 +20,7 @@ namespace PizzaPie.Questions.Providers
         private Dictionary<QuestionCategory, QnABundle> questions;
         private Dictionary<QuestionCategory, CategoryDefinition> definitions;
 
-        private Unity.Utils.CouroutinesHandler coroutineHandler;
+        private Unity.Utils.CoroutinesHandler coroutineHandler;
 
         private int QnALoadAttemps;
         private int QnAFallbackLoadAttempts;
@@ -41,17 +41,12 @@ namespace PizzaPie.Questions.Providers
             this.fallbackQuestionsLoader = fallbackQuestionsLoader;
             this.fallbackCategoriesLoader = fallbackCategoriesLoader;
 
-            Services.Instance.EventAggregator.Subscribe<BeforeLoadEventArgs>(this);     //dispose or destructor to unsub?
+            Services.Instance.EventAggregator.Subscribe<LoadEventArgs>(this);     //dispose or destructor to unsub?
         }
 
         #endregion
 
         #region IQuestionsProvider
-        //public void Init()
-        //{
-        //    coroutineHandler = Unity.Utils.CouroutinesHandler.Init();
-        //    coroutineHandler.StartCoroutine(InitSequence());
-        //}
 
         public QnA GetNextQuestion(QuestionCategory category)
         {
@@ -94,18 +89,21 @@ namespace PizzaPie.Questions.Providers
         private IEnumerator InitSequence()
         {
             if (coroutineHandler == null)
-                coroutineHandler = Unity.Utils.CouroutinesHandler.Init();
+                coroutineHandler = Unity.Utils.CoroutinesHandler.Create();
 
             questionsLoader.RequestQuestions(OnSuccessQnALoad, OnFailQnALoad);
             while (!QnAIsLoaded)
                 yield return null;
-
+            
             categoriesLoader.RequestCategoryDefinitions(OnSuccessDefinitionsLoad, OnFailDefinitionsLoad);
             while (!categoriesIsLoaded)
                 yield return null;
 
             IsInit = true;
             coroutineHandler.Dispose();
+
+            foreach (var bundle in questions.Values)
+                bundle.Shuffle();
         }
 
         private void OnSuccessQnALoad(QnABundle[] bundles)
@@ -114,6 +112,7 @@ namespace PizzaPie.Questions.Providers
 
             foreach (var bundle in bundles)
             {
+
                 if (questions.ContainsKey(bundle.Category))
                 {
                     Debug.LogFormat("Multiple files with same category are not supported, a bundle of {0} did not get loaded", bundle.Category.ToString());
@@ -197,7 +196,7 @@ namespace PizzaPie.Questions.Providers
         #endregion
 
         #region ISubscriber
-        public void Handler(object sender, BeforeLoadEventArgs e)
+        public void Handler(object sender, LoadEventArgs e)
         {
             e.SequenceLoader.AddEnumerator(InitSequence());
         }

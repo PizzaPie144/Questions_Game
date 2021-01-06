@@ -8,6 +8,7 @@ namespace PizzaPie
     {
         EASY,
         CASUAL,
-        HARD
+        HARD,
+        DEBUG
     }
 }

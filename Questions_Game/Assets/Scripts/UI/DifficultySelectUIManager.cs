@@ -6,11 +6,10 @@ using PizzaPie.Events;
 
 namespace PizzaPie.UI
 {
-    [RequireComponent(typeof(CanvasGroup))]
     public class DifficultySelectUIManager : MonoBehaviour , ISubscriber<PlayButtonEventArgs>
     {
         [SerializeField]
-        private GameObject difficultySelectPanel;
+        private GameObject difficultySelectParentPanel;
         [SerializeField]
         private GameObject difficultySelectButtonPrefab;
         [SerializeField]
@@ -19,81 +18,70 @@ namespace PizzaPie.UI
         private float flashDelay;
         [SerializeField]
         private int flashRepeats;
-
+        [SerializeField]
         private CanvasGroup canvasGroup;
+        [SerializeField]
+        private float fadeInDelay;
 
         private Button[] difficultySelectButtons;
         private DifficultyDefinition[] definitions;
 
-        private void Awake()
-        {
-            canvasGroup = GetComponent<CanvasGroup>();
-        }
-
         private void Start()
         {
             Services.Instance.EventAggregator.Subscribe<PlayButtonEventArgs>(this);
+            difficultySelectParentPanel.SetActive(false);
         }
 
-        private void OnDestroy()
-        {
-            Services.Instance.EventAggregator.Unsubscribe<PlayButtonEventArgs>(this);
-        }
 
         private void Init()
         {
-            @Reset();
-            definitions = Resources.LoadAll<DifficultyDefinition>("Resources/Difficulty Definitions");
+            definitions = Resources.LoadAll<DifficultyDefinition>("Difficulty Definitions");      //would make more sense to have them delivered from elsewhere
             System.Array.Sort(definitions);
+            difficultySelectButtons = new Button[definitions.Length];
+            difficultySelectParentPanel.SetActive(true);
 
             for (int i = 0; i < definitions.Length; i++)
             {
-                var go = Instantiate(difficultySelectButtonPrefab);
-
+                var go = Instantiate(difficultySelectButtonPrefab,difficultySelectParentPanel.transform);
                 difficultySelectButtons[i] = go.GetComponent<Button>();
                 go.GetComponentInChildren<Text>().text = definitions[i].DisplayName;
                 var index = i;
                 go.GetComponent<Button>().onClick.AddListener(() => OnDifficultySelected(index));
+
             }
         }
 
         private void OnDifficultySelected(int index)
         {
-            var coccurrentRoutine = new Unity.Utils.CocurrentRoutineHandler(Disable, true, 
-                Utils.ButtonFlash(difficultySelectButtons[index],difficultySelectButtons[index].colors,flashColor,flashDelay,flashRepeats));
+
+            var coccurrentRoutine = new Unity.Utils.CocurrentRoutineHandler(Disable, true,
+                new System.Func<IEnumerator>(() => Utils.ButtonFlash(difficultySelectButtons[index],difficultySelectButtons[index].colors,flashColor,flashDelay,flashRepeats)));
 
             Services.Instance.EventAggregator.Invoke(this, new DifficultySelectedEventArgs(definitions[index], coccurrentRoutine));
             coccurrentRoutine.Start();
         }
 
-        public void @Reset()
+        public void _Reset()
         {
-            //useless as destroy runs on the end of the frame
-            canvasGroup.alpha = 1f;
-            for (int i = difficultySelectPanel.transform.childCount - 1; i >= 0; i--)
-                Destroy(difficultySelectPanel.transform.GetChild(i));
+            canvasGroup.alpha = 0f;
+            foreach (var button in difficultySelectButtons)
+                Destroy(button.gameObject);
         }
 
 
         private void Disable()
         {
-            difficultySelectPanel.SetActive(false);
+            difficultySelectParentPanel.SetActive(false);
+            _Reset();
         }
 
         public void Handler(object sender, PlayButtonEventArgs e)
         {
-            Init();
             canvasGroup.alpha = 0f;
-            StartCoroutine(Utils.UIFade(canvasGroup, 3f, 1f));
+            Init();
+            difficultySelectParentPanel.SetActive(true);
+            StartCoroutine(Utils.CanvasGroupFade(canvasGroup, fadeInDelay, 1f));
         }
     }
 }
 
-/*
- * On Init Load After difficulty Select
- * Add a routine that takes Time.time and checks if 5 secs passed (so to prevent loading screen flash)
- * Obvisously nto here
- * 
- * Category definitions to new provider
- * 
- */

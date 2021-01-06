@@ -7,27 +7,26 @@ using PizzaPie.Questions;
 
 namespace PizzaPie
 {
-    public class GameManager : MonoBehaviour , ISubscriber<DifficultySelectedEventArgs> ,ISubscriber<AnswerPickedCoccurentEventArgs>
+    public class GameManager : MonoBehaviour , ISubscriber<DifficultySelectedEventArgs> ,ISubscriber<AnswerPickedCoccurentEventArgs> ,ISubscriber<PlayAgainEventArgs>
     {
         private DifficultyDefinition selectedDifficulty;
  
         private int wrongAnswersCount;
         private int rightAnswersCount;
 
+        [SerializeField]
+        private float minLoadTime;
+
         private void Start()
         {
             Services.Instance.EventAggregator.Subscribe<DifficultySelectedEventArgs>(this);
             Services.Instance.EventAggregator.Subscribe<AnswerPickedCoccurentEventArgs>(this);
+            Services.Instance.EventAggregator.Subscribe<PlayAgainEventArgs>(this);
         }
 
-        private void OnDestroy()
-        {
-            Services.Instance.EventAggregator.Unsubscribe<DifficultySelectedEventArgs>(this);
-            Services.Instance.EventAggregator.Unsubscribe<AnswerPickedCoccurentEventArgs>(this);
-        }
-
-
+        
         #region event handlers
+
         public void Handler(object sender, DifficultySelectedEventArgs e)
         {
             e.CoccurentRoutine.AddOnFinishCallback(InitLoad);
@@ -38,40 +37,45 @@ namespace PizzaPie
         public void Handler(object sender, AnswerPickedCoccurentEventArgs e)
         {
             if (e.IsRight)
+                rightAnswersCount++;
+            else
+                wrongAnswersCount++;
+
+            if (selectedDifficulty.IsWin(rightAnswersCount) || selectedDifficulty.IsLose(wrongAnswersCount))
             {
-                if (selectedDifficulty.IsWin(++rightAnswersCount))
-                {
-                    //Init win sequence 
-                }
-                else
-                {
-                    Services.Instance.EventAggregator.Invoke(this,new GameStartsEventArgs());
-                }
+                e.CocurrentRoutineHandler.AddOnFinishCallback(() => OnEnd(e.IsRight));
             }
             else
-            {
-                if (selectedDifficulty.IsLose(++wrongAnswersCount))
-                {
-                    //init lose sequence
-                }
-                else
-                {
-                    Services.Instance.EventAggregator.Invoke(this, new GameStartsEventArgs());
-                }
-            }
+                e.CocurrentRoutineHandler.AddOnFinishCallback(() => Services.Instance.EventAggregator.Invoke(this, new GameStartsEventArgs()));
+
         }
+
+        public void Handler(object sender, PlayAgainEventArgs e)
+        {
+            _Reset();
+            Services.Instance.EventAggregator.Invoke(this, new PlayButtonEventArgs());
+        }
+
         #endregion
+
+        private void OnEnd(bool isWin)
+        {
+            var cocurrentRoutine = new Unity.Utils.CocurrentRoutineHandler();
+            Services.Instance.EventAggregator.Invoke(this, new EndGameCocurrentEventArgs(isWin, cocurrentRoutine));
+            cocurrentRoutine.Start();
+        }
 
         private void InitLoad()
         {
             var sequence = new Unity.Utils.SequenceLoader();
-            Services.Instance.EventAggregator.Invoke(this, new BeforeLoadEventArgs(sequence, selectedDifficulty.GameDifficulty));
-            sequence.AddEnumerator(MinDelayForceRoutine(5f, Time.time));
+            sequence.AddOnFinishAction(() => Services.Instance.EventAggregator.Invoke(this, new GameStartsEventArgs()));
+            Services.Instance.EventAggregator.Invoke(this, new LoadEventArgs(sequence, selectedDifficulty.GameDifficulty));
+            sequence.AddEnumerator(MinDelayForceRoutine(minLoadTime, Time.time));
             sequence.Start();
         }
 
-        //OnAnswerPickedcoccurent (though will only need the OnFinish Function del)
-        private void @Reset()
+
+        private void _Reset()
         {
             rightAnswersCount = wrongAnswersCount = 0;
             selectedDifficulty = null;
@@ -87,8 +91,7 @@ namespace PizzaPie
             yield return new WaitForSeconds(timeLimit - Time.time );
         }
 
-
-
+        
     }
 }
 

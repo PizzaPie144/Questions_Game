@@ -2,29 +2,29 @@
   "category": 0,
   "QnADatas": [
     {
-      "question": "AAAAAAAAAAAA?",
-      "rightAnswer": "gigbhun",
-      "wrongAnswer": [ "aaaa", "bbbb", "cccc" ]
+      "question": "How many soccer players should each team have on the field at the start of each match?",
+      "rightAnswer": "11",
+      "wrongAnswer": [ "10", "12" ]
     },
     {
-      "question": "BBBBBBBBBBBBBB?",
-      "rightAnswer": "fdsgsgs",
-      "wrongAnswer": [ "aaa", "bbb", "ccc" ]
+      "question": "When Michael Jordan played for the Chicago Bulls, how many NBA Championships did he win?",
+      "rightAnswer": "Six",
+      "wrongAnswer": [ "Seven", "Eight" ]
     },
     {
-      "question": "CCCCCCCCCCCCCC?",
-      "rightAnswer": "fdsgsgs",
-      "wrongAnswer": [ "aaa", "bbb", "ccc" ]
+      "question": "What country won the very first FIFA World Cup in 1930?",
+      "rightAnswer": "Uruguay",
+      "wrongAnswer": [ "England", "Greece" ]
     },
     {
-      "question": "DDDDDDDDDDDDDDD?",
-      "rightAnswer": "fdsgsgs",
-      "wrongAnswer": [ "aaa", "bbb", "ccc" ]
+      "question": "In what year was the first-ever Wimbledon Championship held?",
+      "rightAnswer": "1877",
+      "wrongAnswer": [ "1867", "1907" ]
     },
     {
-      "question": "FFFFFFFFFFFFFF?",
-      "rightAnswer": "fdsgsgs",
-      "wrongAnswer": [ "aaa", "bbb", "ccc" ]
+      "question": "What sport was Jesse Owens involved in?",
+      "rightAnswer": "Track and field",
+      "wrongAnswer": [ "Swimming", "Something else" ]
     }
   ]
 }

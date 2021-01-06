@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using PizzaPie.Questions;
 using PizzaPie.Events;
+using PizzaPie.Wheel;
 
 namespace PizzaPie.UI
 {
-    public class QuestionUIManager : MonoBehaviour, ISubscriber<BeforeQuestionSelected>
+    public class QuestionUIManager : MonoBehaviour, ISubscriber<Wheel.WheelStopSpinEventArgs>
     {
         [SerializeField]
         private GameObject questionParentUI;
@@ -29,24 +30,23 @@ namespace PizzaPie.UI
         void Start()
         {
             defaultColorBlock = answersButtons[0].colors;
+            questionParentUI.SetActive(false);
             //disable on start
-            Services.Instance.EventAggregator.Subscribe<BeforeQuestionSelected>(this);
+            Services.Instance.EventAggregator.Subscribe<WheelStopSpinEventArgs>(this);
         }
 
-        void OnDestroy()
+        public void Handler(object sender, WheelStopSpinEventArgs e)
         {
-            Services.Instance.EventAggregator.Unsubscribe<BeforeQuestionSelected>(this);
-        }
+            e.CocurrentRoutine.AddOnFinishCallback(OnEnter);
 
-        public void Handler(object sender, BeforeQuestionSelected e)
-        {
             ResetButtons();
-
             List<int> indexes = new List<int>();
             for (int i = 0; i < Settings.ANSWERS_COUNT; i++)
                 indexes.Add(i);
 
-            foreach (var ans in e.QnA.WrongAnswers)
+            var QnA = Services.Instance.QuestionsProvider.GetNextQuestion(e.QuestionCategory);
+            questionText.text = QnA.Question;
+            foreach (var ans in QnA.WrongAnswers)
             {
                 var r = Random.Range(0, indexes.Count);
                 var index = indexes[r];
@@ -57,28 +57,34 @@ namespace PizzaPie.UI
                 answersButtons[index].onClick.AddListener(() => OnAnswerPicked(false, tempIndexA));
             }
 
-            answersButtons[indexes[0]].GetComponentInChildren<Text>().text = e.QnA.RightAnswer;
+            answersButtons[indexes[0]].GetComponentInChildren<Text>().text = QnA.RightAnswer;
             var tempIndexB = indexes[0];
             answersButtons[indexes[0]].onClick.AddListener(() => OnAnswerPicked(true, tempIndexB));
         }
 
+        private void OnEnter()
+        {
+            questionParentUI.SetActive(true);
+        }
 
-        void OnAnswerPicked(bool isRight, int  buttonIndex)
+        private void OnAnswerPicked(bool isRight, int  buttonIndex)
         {
             var color = isRight ? rightAnswerColor : wrongAnswerColor;
-            var coccurentHandler = new Unity.Utils.CocurrentRoutineHandler(Disable,true, Utils.ButtonFlash(answersButtons[buttonIndex],defaultColorBlock, color, flashDelay, flashRepeats));
+            
+            var coccurentHandler = 
+                new Unity.Utils.CocurrentRoutineHandler(OnExit, true,
+                new System.Func<IEnumerator>(() => Utils.ButtonFlash(answersButtons[buttonIndex], defaultColorBlock, color, flashDelay, flashRepeats)));
 
-            Services.Instance.EventAggregator.Invoke(this,new AnswerPickedCoccurentEventArgs(isRight, coccurentHandler));
+            Services.Instance.EventAggregator.Invoke(this, new AnswerPickedCoccurentEventArgs(isRight, coccurentHandler));
             coccurentHandler.Start();
         }
 
-        void Disable()
-        { 
-            //set Active False
-            throw new System.NotImplementedException();
+        private void OnExit()
+        {
+            questionParentUI.SetActive(false);
         }
 
-        void ResetButtons()
+        private void ResetButtons()
         {
             foreach (var button in answersButtons)
             {
@@ -87,6 +93,6 @@ namespace PizzaPie.UI
             }
         }
 
-        
+       
     }
 }
