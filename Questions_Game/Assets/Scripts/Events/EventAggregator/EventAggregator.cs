@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace PizzaPie.Events
+namespace PizzaPie.QuestionsGame.Events
 {
     public class EventAggregator : IEventAggregatorService      
     {

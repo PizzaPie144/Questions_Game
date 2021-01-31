@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using PizzaPie.Events;
+using PizzaPie.QuestionsGame.Events;
 
-namespace PizzaPie.UI
+namespace PizzaPie.QuestionsGame.UI
 {
     public class DifficultySelectUIManager : MonoBehaviour , ISubscriber<PlayButtonEventArgs>
     {
@@ -22,6 +22,8 @@ namespace PizzaPie.UI
         private CanvasGroup canvasGroup;
         [SerializeField]
         private float fadeInDelay;
+        [SerializeField]
+        private AudioClip clipOnSelected;
 
         private Button[] difficultySelectButtons;
         private DifficultyDefinition[] definitions;
@@ -53,7 +55,7 @@ namespace PizzaPie.UI
 
         private void OnDifficultySelected(int index)
         {
-
+            Services.Instance.SoundService.PlayClip(clipOnSelected, QuestionsGame.Sound.AudioType.SOUND_FX);
             var coccurrentRoutine = new Unity.Utils.CocurrentRoutineHandler(Disable, true,
                 new System.Func<IEnumerator>(() => Utils.ButtonFlash(difficultySelectButtons[index],difficultySelectButtons[index].colors,flashColor,flashDelay,flashRepeats)));
 

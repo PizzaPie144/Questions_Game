@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-namespace PizzaPie.UI
+namespace PizzaPie.QuestionsGame.UI
 {
     public class EndGameUIManager : MonoBehaviour ,Events.ISubscriber<EndGameCocurrentEventArgs>
     {
@@ -22,6 +22,12 @@ namespace PizzaPie.UI
         private Button playAgainButton;
         [SerializeField]
         private float fadeDelay;
+        [SerializeField]
+        private AudioClip winClip;
+        [SerializeField]
+        private AudioClip loseClip;
+        [SerializeField]
+        private AudioClip playAgainClip;
 
         private void Start()
         {
@@ -32,6 +38,7 @@ namespace PizzaPie.UI
 
         private void OnPlayAgain()
         {
+            Services.Instance.SoundService.PlayClip(playAgainClip, QuestionsGame.Sound.AudioType.SOUND_FX);
             _Reset();
             Services.Instance.EventAggregator.Invoke<PlayAgainEventArgs>(this, new PlayAgainEventArgs());
             endGameUIParent.SetActive(false);
@@ -40,6 +47,8 @@ namespace PizzaPie.UI
         public void Handler(object sender, EndGameCocurrentEventArgs e)
         {
             endGameUIParent.SetActive(true);
+            Services.Instance.SoundService.PlayClip(e.IsWin ? winClip : loseClip, QuestionsGame.Sound.AudioType.SOUND_FX);
+
             endGameText.text = e.IsWin ? winText : loseText;
             e.CocurrentRoutine.AddRoutine(FadeInRoutine);
         }

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using PizzaPie.Questions.Serialization;
+using PizzaPie.QuestionsGame.Questions.Serialization;
 using UnityEngine;
 
-namespace PizzaPie.Questions.Loaders
+namespace PizzaPie.QuestionsGame.Questions.Loaders
 {
     public class LocalQuestionLoader : IQuestionsLoader
     {

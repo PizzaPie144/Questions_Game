@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace PizzaPie.Questions
+namespace PizzaPie.QuestionsGame.Questions
 {
     public class QnA
     {

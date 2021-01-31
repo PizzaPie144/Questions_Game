@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace PizzaPie.Wheel
+namespace PizzaPie.QuestionsGame.Wheel
 {
     public class WheelStopSpinEventArgs : EventArgs
     {

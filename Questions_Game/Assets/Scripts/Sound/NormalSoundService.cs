@@ -29,13 +29,14 @@ namespace PizzaPie.QuestionsGame.Sound
             sourceFX.volume = volum;
         }
 
-        public void PlayClip(AudioClip clip, AudioType type)
+        public void PlayClip(AudioClip clip, AudioType type, bool loop = false)
         {
             switch (type)
             {
                 case AudioType.SOUND_FX:
                     sourceFX.clip = clip;
                     sourceFX.Play();
+                    sourceFX.loop = false;
                     break;
                 case AudioType.MUSIC:
                     sourceMusic.clip = clip;
@@ -43,5 +44,20 @@ namespace PizzaPie.QuestionsGame.Sound
                     break;
             }
         }
+
+        public void Stop(AudioType type)
+        {
+            switch (type)
+            {
+                case AudioType.SOUND_FX:
+                    sourceFX.Stop();
+                    break;
+                case AudioType.MUSIC:
+                    sourceMusic.Stop();
+                    break;
+            }
+        }
+
     }
+
 }

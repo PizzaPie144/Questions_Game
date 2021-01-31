@@ -1,4 +1,4 @@
-﻿namespace PizzaPie.Questions
+﻿namespace PizzaPie.QuestionsGame.Questions
 {
     [System.Serializable]
     public enum QuestionCategory

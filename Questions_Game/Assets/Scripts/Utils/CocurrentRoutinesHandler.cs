@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace PizzaPie.Unity.Utils
+namespace PizzaPie.QuestionsGame.Unity.Utils
 {
     public class CocurrentRoutineHandler
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace PizzaPie.Questions
+namespace PizzaPie.QuestionsGame.Questions
 {
     //might make sense to remove the enumerator interface, after all it won;t get iterated 
     public class QnABundle 

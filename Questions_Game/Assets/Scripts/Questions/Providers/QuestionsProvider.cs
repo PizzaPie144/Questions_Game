@@ -4,10 +4,9 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
+using PizzaPie.QuestionsGame.Questions.Loaders;
 
-using PizzaPie.Questions.Loaders;
-
-namespace PizzaPie.Questions.Providers
+namespace PizzaPie.QuestionsGame.Questions.Providers
 {
     public class QuestionsProvider : IQuestionsProvider, Events.ISubscriber<LoadEventArgs>
     {

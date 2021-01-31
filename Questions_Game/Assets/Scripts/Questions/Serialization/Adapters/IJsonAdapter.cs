@@ -1,6 +1,6 @@
 ﻿
 
-namespace PizzaPie.Questions.Serialization
+namespace PizzaPie.QuestionsGame.Questions.Serialization
 {
     public interface IJsonAdapter
     {

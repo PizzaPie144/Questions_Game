@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PizzaPie.Questions.Providers 
+namespace PizzaPie.QuestionsGame.Questions.Providers 
 {
     public interface IQuestionsProvider
     {

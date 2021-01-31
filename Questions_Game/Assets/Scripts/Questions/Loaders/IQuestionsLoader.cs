@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace PizzaPie.Questions.Loaders
+namespace PizzaPie.QuestionsGame.Questions.Loaders
 {
     public interface IQuestionsLoader 
     {

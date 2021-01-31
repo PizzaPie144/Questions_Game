@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using PizzaPie.Events;
+using PizzaPie.QuestionsGame.Events;
+
 
 using System.Threading.Tasks;
 
-namespace PizzaPie.Wheel
+namespace PizzaPie.QuestionsGame.Wheel
 {
     public class WheelManager : MonoBehaviour, ISubscriber<GameStartsEventArgs>, ISubscriber<StopWheelButtonEventArgs>
     {
@@ -24,6 +25,10 @@ namespace PizzaPie.Wheel
         private Color tintColor;
         [SerializeField]
         private float exitDelay;
+        [SerializeField]
+        private AudioClip wheelSpinningClip;
+        [SerializeField]
+        private AudioClip wheelStopClip;
 
         private bool stop;
 
@@ -83,7 +88,9 @@ namespace PizzaPie.Wheel
 
         private IEnumerator SpinRoutine(List<float> percentages, List<Color> colors)
         {
-            var angle = -180f;
+            Services.Instance.SoundService.PlayClip(wheelSpinningClip, QuestionsGame.Sound.AudioType.SOUND_FX, true);
+
+            var angle = 0f;
             var spinSpeed = this.spinSpeed;
             int currentIndex = 0;
 
@@ -114,6 +121,8 @@ namespace PizzaPie.Wheel
 
             }
 
+            Services.Instance.SoundService.PlayClip(wheelStopClip, QuestionsGame.Sound.AudioType.SOUND_FX, false);
+
             yield return new WaitForSeconds(exitDelay);
 
             var cocurrentRoutine = new Unity.Utils.CocurrentRoutineHandler();
@@ -128,7 +137,7 @@ namespace PizzaPie.Wheel
             wheel.gameObject.SetActive(false);
         }
 
-        private List<float> GeneratePercentages(Dictionary<Questions.QuestionCategory,int> remainingQuestionsCounts, out List<Color> colors)
+        private List<float> GeneratePercentages(Dictionary<Questions.QuestionCategory, int> remainingQuestionsCounts, out List<Color> colors)
         {
             float total = 0;
             List<float> percentages = new List<float>();
@@ -158,9 +167,18 @@ namespace PizzaPie.Wheel
             float screenAspect = (float)Screen.width / (float)Screen.height;
             float camHalfHeight = Camera.main.orthographicSize;
             float camHalfWidth = screenAspect * camHalfHeight;
-            float camWidth = 2.0f * camHalfWidth;
+            float camHeight = 2f * camHalfHeight;
+            float camWidth = 2f * camHalfWidth;
 
-            size = (int)((float)camWidth * offset * (float)pixelsPerUnit);
+            float refSize = 0f;
+            if (camWidth < camHeight)
+                refSize = camWidth;
+            else
+            {
+                refSize = camHeight /2f;
+            }
+
+            size = (int)((float)refSize * offset * (float)pixelsPerUnit);
             
             Texture2D tex = new Texture2D(1, 1);
             tex.SetPixel(0, 0, Color.clear);

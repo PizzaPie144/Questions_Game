@@ -1,10 +1,13 @@
-﻿using PizzaPie.Wheel;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PizzaPie.UI
+using PizzaPie.QuestionsGame.Wheel;
+
+
+namespace PizzaPie.QuestionsGame.UI
 {
     public class WheelUIManager : MonoBehaviour , Events.ISubscriber<GameStartsEventArgs> ,Events.ISubscriber<WheelStopSpinEventArgs>
     {

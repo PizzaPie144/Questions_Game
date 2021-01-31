@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-namespace PizzaPie.UI
+namespace PizzaPie.QuestionsGame.UI
 {
     public static class Utils
     {

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PizzaPie.Events;
-using PizzaPie.UI;
-using PizzaPie.Questions;
+using PizzaPie.QuestionsGame.UI;
+using PizzaPie.QuestionsGame.Questions;
+using PizzaPie.QuestionsGame.Events;
 
-namespace PizzaPie
+
+namespace PizzaPie.QuestionsGame
 {
     public class GameManager : MonoBehaviour , ISubscriber<DifficultySelectedEventArgs> ,ISubscriber<AnswerPickedCoccurentEventArgs> ,ISubscriber<PlayAgainEventArgs>
     {
@@ -24,7 +26,13 @@ namespace PizzaPie
             Services.Instance.EventAggregator.Subscribe<PlayAgainEventArgs>(this);
         }
 
-        
+        private void Update()
+        {
+            if (Input.GetKeyUp(KeyCode.Escape))
+                Application.Quit();
+        }
+
+
         #region event handlers
 
         public void Handler(object sender, DifficultySelectedEventArgs e)

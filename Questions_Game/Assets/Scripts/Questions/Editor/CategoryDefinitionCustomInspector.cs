@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace PizzaPie.Editor 
+namespace PizzaPie.QuestionsGame.Editor 
 {
     [CustomEditor(typeof(CategoriesDefinitionContainer))]
     public class CategoryDefinitionCustomInspector : UnityEditor.Editor

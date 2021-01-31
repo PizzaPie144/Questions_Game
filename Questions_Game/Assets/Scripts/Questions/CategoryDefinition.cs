@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PizzaPie.Questions
+namespace PizzaPie.QuestionsGame.Questions
 {
     public struct CategoryDefinition 
     {

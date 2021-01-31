@@ -1,5 +1,5 @@
 ﻿
-namespace PizzaPie.Questions.Serialization
+namespace PizzaPie.QuestionsGame.Questions.Serialization
 {
     [System.Serializable]
     public struct QnADataBundle

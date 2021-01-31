@@ -1,17 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System;
 
 using UnityEngine;
 using UnityEditor;
 
 using PizzaPie.Editor.Util;
-using PizzaPie.Questions;
-using PizzaPie.Questions.Serialization;
+using PizzaPie.QuestionsGame.Questions;
+using PizzaPie.QuestionsGame.Questions.Serialization;
 
 
-namespace PizzaPie.Editor.Questions
+namespace PizzaPie.QuestionsGame.Editor.Questions
 {
     public class QuestionEditorHelperWindow : EditorWindow
     {

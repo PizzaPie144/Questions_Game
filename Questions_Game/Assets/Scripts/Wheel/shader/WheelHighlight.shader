@@ -5,6 +5,7 @@
         _MainTex ("Texture", 2D) = "white" {}
         _BorderColor("Border Color", Color) = (0,0,0,1)
         _ColorTint ("Color Tint", Color) = (1,1,1,0)
+        _Tolerance("Tolerance", float) = 0.1
         
     }
     SubShader
@@ -47,6 +48,7 @@
             fixed4 _BorderColor;
             fixed4 _TargetColor;
             fixed4 _ColorTint;
+            float _Tolerance;
 
             fixed4 frag (v2f i) : SV_Target
             {
@@ -58,7 +60,7 @@
                 //high light
                 float4 a = abs(col - _TargetColor);
 
-                if(a.x + a.y + a.z + a.w < 0.1)
+                if(a.x + a.y + a.z + a.w < _Tolerance)
                 {
                     col = col * _ColorTint ;
                 }

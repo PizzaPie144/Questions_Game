@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace PizzaPie {
+namespace PizzaPie.QuestionsGame {
 
     [CreateAssetMenu(menuName ="Category Definition")]
     public class CategoriesDefinitionContainer : ScriptableObject

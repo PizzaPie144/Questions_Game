@@ -1,5 +1,5 @@
 ﻿
-namespace PizzaPie.Questions
+namespace PizzaPie.QuestionsGame.Questions
 {
     public static class Paths
     {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PizzaPie.Questions.Serialization
+namespace PizzaPie.QuestionsGame.Questions.Serialization
 {
     public class UnityJsonAdapter : IJsonAdapter
     {

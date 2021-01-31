@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using PizzaPie.Questions;
-using PizzaPie.Events;
-using PizzaPie.Wheel;
+using PizzaPie.QuestionsGame.Questions;
+using PizzaPie.QuestionsGame.Events;
+using PizzaPie.QuestionsGame.Wheel;
 
-namespace PizzaPie.UI
+namespace PizzaPie.QuestionsGame.UI
 {
     public class QuestionUIManager : MonoBehaviour, ISubscriber<Wheel.WheelStopSpinEventArgs>
     {
@@ -24,6 +24,10 @@ namespace PizzaPie.UI
         private float flashDelay = 0.5f;
         [SerializeField]
         private int flashRepeats = 8;
+        [SerializeField]
+        private AudioClip isRightClip;
+        [SerializeField]
+        private AudioClip isWrongClip;
 
         private ColorBlock defaultColorBlock;
 
@@ -70,7 +74,9 @@ namespace PizzaPie.UI
         private void OnAnswerPicked(bool isRight, int  buttonIndex)
         {
             var color = isRight ? rightAnswerColor : wrongAnswerColor;
-            
+
+            Services.Instance.SoundService.PlayClip(isRight ? isRightClip : isWrongClip, QuestionsGame.Sound.AudioType.SOUND_FX);
+
             var coccurentHandler = 
                 new Unity.Utils.CocurrentRoutineHandler(OnExit, true,
                 new System.Func<IEnumerator>(() => Utils.ButtonFlash(answersButtons[buttonIndex], defaultColorBlock, color, flashDelay, flashRepeats)));

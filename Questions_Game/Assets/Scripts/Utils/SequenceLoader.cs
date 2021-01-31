@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PizzaPie.Unity.Utils
+namespace PizzaPie.QuestionsGame.Unity.Utils
 {
     public class SequenceLoader
     {
