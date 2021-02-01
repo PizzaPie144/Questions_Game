@@ -1,24 +1,50 @@
-﻿using System.Collections;
+﻿using PizzaPie.QuestionsGame.States;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace PizzaPie.QuestionsGame.UI
 {
-    public class LoadingUIManger : MonoBehaviour , Events.ISubscriber<LoadEventArgs>
+    public class LoadingUIManger : MonoBehaviour , IState 
     {
         [SerializeField]
         private GameObject parentUI;
+        private StateMachine stateMachine;
 
-        private void Start()
-        {
-            Services.Instance.EventAggregator.Subscribe<LoadEventArgs>(this);
-            parentUI.SetActive(false);
-        }
+        public StateType GetStateType => StateType.LOADING;
 
         public void Handler(object sender, LoadEventArgs e)
         {
-            parentUI.SetActive(true);
             e.SequenceLoader.AddOnFinishAction(() => parentUI.SetActive(false));
+        }
+
+        public void Init(StateMachine stateMachine)
+        {
+            parentUI.SetActive(false);
+            this.stateMachine = stateMachine;
+        }
+
+        public void Enter()
+        {
+            parentUI.SetActive(true);
+            var sequence = new Unity.Utils.SequenceLoader();
+            sequence.AddOnFinishAction(()=>stateMachine.ChangeState(StateType.WHEEL));
+            Services.Instance.EventAggregator.Invoke
+                (this, new LoadEventArgs(sequence, stateMachine.GetBlackBoardValue<DifficultyDefinition>().GameDifficulty));
+            sequence.Start();
+        }
+
+        public void Exit()
+        {
+            parentUI.SetActive(false);
+        }
+
+        public void _Reset()
+        {
+        }
+
+        public void Interupt()
+        {
         }
     }
 }

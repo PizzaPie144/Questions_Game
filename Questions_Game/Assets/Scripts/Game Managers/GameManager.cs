@@ -9,10 +9,15 @@ using PizzaPie.QuestionsGame.Events;
 
 namespace PizzaPie.QuestionsGame
 {
-    public class GameManager : MonoBehaviour , ISubscriber<DifficultySelectedEventArgs> ,ISubscriber<AnswerPickedCoccurentEventArgs> ,ISubscriber<PlayAgainEventArgs>
+    public class GameManager : MonoBehaviour, ISubscriber<DifficultySelectedEventArgs>, 
+        /*ISubscriber<AnswerPickedCoccurentEventArgs>,*/ ISubscriber<PlayAgainEventArgs>,
+        ISubscriber<LoadEventArgs>
     {
+
+        public static GameManager Instance { get; private set; }
+
         private DifficultyDefinition selectedDifficulty;
- 
+
         private int wrongAnswersCount;
         private int rightAnswersCount;
 
@@ -21,9 +26,12 @@ namespace PizzaPie.QuestionsGame
 
         private void Start()
         {
+            Instance = this;
+
             Services.Instance.EventAggregator.Subscribe<DifficultySelectedEventArgs>(this);
-            Services.Instance.EventAggregator.Subscribe<AnswerPickedCoccurentEventArgs>(this);
+            //Services.Instance.EventAggregator.Subscribe<AnswerPickedCoccurentEventArgs>(this);
             Services.Instance.EventAggregator.Subscribe<PlayAgainEventArgs>(this);
+            Services.Instance.EventAggregator.Subscribe<LoadEventArgs>(this);
         }
 
         private void Update()
@@ -32,36 +40,49 @@ namespace PizzaPie.QuestionsGame
                 Application.Quit();
         }
 
-
-        #region event handlers
-
-        public void Handler(object sender, DifficultySelectedEventArgs e)
+        public bool IsEnd(bool isRight)
         {
-            e.CoccurentRoutine.AddOnFinishCallback(InitLoad);
-            selectedDifficulty = e.DifficultyDefinition;
-        }
-
-
-        public void Handler(object sender, AnswerPickedCoccurentEventArgs e)
-        {
-            if (e.IsRight)
+            if (isRight)
                 rightAnswersCount++;
             else
                 wrongAnswersCount++;
 
             if (selectedDifficulty.IsWin(rightAnswersCount) || selectedDifficulty.IsLose(wrongAnswersCount))
-            {
-                e.CocurrentRoutineHandler.AddOnFinishCallback(() => OnEnd(e.IsRight));
-            }
+                return true;
             else
-                e.CocurrentRoutineHandler.AddOnFinishCallback(() => Services.Instance.EventAggregator.Invoke(this, new GameStartsEventArgs()));
-
+                return false; 
         }
+
+        #region event handlers
+
+        public void Handler(object sender, DifficultySelectedEventArgs e)
+        {
+            selectedDifficulty = e.DifficultyDefinition;
+        }
+
+        //public void Handler(object sender, AnswerPickedCoccurentEventArgs e)
+        //{
+        //    if (e.IsRight)
+        //        rightAnswersCount++;
+        //    else
+        //        wrongAnswersCount++;
+
+        //    if (selectedDifficulty.IsWin(rightAnswersCount) || selectedDifficulty.IsLose(wrongAnswersCount))
+        //    {
+        //        //e.CocurrentRoutineHandler.AddOnFinishCallback(() => OnEnd(e.IsRight));
+        //    }
+        //    //else
+        //    //    e.CocurrentRoutineHandler.AddOnFinishCallback(() => Services.Instance.EventAggregator.Invoke(this, new GameStartsEventArgs()));
+        //}
 
         public void Handler(object sender, PlayAgainEventArgs e)
         {
             _Reset();
-            Services.Instance.EventAggregator.Invoke(this, new PlayButtonEventArgs());
+        }
+
+        public void Handler(object sender, LoadEventArgs e)
+        {
+            e.SequenceLoader.AddEnumerator(MinDelayForceRoutine(minLoadTime, Time.time));
         }
 
         #endregion
@@ -75,11 +96,10 @@ namespace PizzaPie.QuestionsGame
 
         private void InitLoad()
         {
-            var sequence = new Unity.Utils.SequenceLoader();
-            sequence.AddOnFinishAction(() => Services.Instance.EventAggregator.Invoke(this, new GameStartsEventArgs()));
-            Services.Instance.EventAggregator.Invoke(this, new LoadEventArgs(sequence, selectedDifficulty.GameDifficulty));
-            sequence.AddEnumerator(MinDelayForceRoutine(minLoadTime, Time.time));
-            sequence.Start();
+            //var sequence = new Unity.Utils.SequenceLoader();
+            //sequence.AddOnFinishAction(() => Services.Instance.EventAggregator.Invoke(this, new GameStartsEventArgs()));
+            //Services.Instance.EventAggregator.Invoke(this, new LoadEventArgs(sequence, selectedDifficulty.GameDifficulty));
+            //sequence.Start();
         }
 
 
@@ -99,7 +119,7 @@ namespace PizzaPie.QuestionsGame
             yield return new WaitForSeconds(timeLimit - Time.time );
         }
 
-        
+       
     }
 }
 

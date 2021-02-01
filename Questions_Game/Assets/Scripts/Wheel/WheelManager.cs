@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PizzaPie.QuestionsGame.Wheel
 {
-    public class WheelManager : MonoBehaviour, ISubscriber<GameStartsEventArgs>, ISubscriber<StopWheelButtonEventArgs>
+    public class WheelManager : MonoBehaviour, ISubscriber<States.StateChangedEventArgs>, ISubscriber<StopWheelButtonEventArgs>
     {
         [SerializeField]
         private float spinSpeed;
@@ -42,21 +42,15 @@ namespace PizzaPie.QuestionsGame.Wheel
         private const string TARGET_COLOR = "_TargetColor";
         private const string TINT_COLOR = "_ColorTint";
 
-        //DEBUG (remove)
-        List<float> percentages = new List<float>() { 0.2f, 0.1f, 0.15f, 0.1f, 0.2f, 0.05f, 0.2f };
-        List<Color> colors = new List<Color>() { Color.red, Color.magenta, Color.gray, Color.cyan, Color.green, Color.yellow, Color.blue };
-
         private void Start()
         {
             spriteRenderer = wheel.GetComponent<SpriteRenderer>();
             mat = spriteRenderer.material;
             Init();
             wheel.SetActive(false);
-            Services.Instance.EventAggregator.Subscribe<GameStartsEventArgs>(this);
+            Services.Instance.EventAggregator.Subscribe<States.StateChangedEventArgs>(this);
             Services.Instance.EventAggregator.Subscribe<StopWheelButtonEventArgs>(this);
         }
-
-        
 
         private void Init()
         {
@@ -67,8 +61,11 @@ namespace PizzaPie.QuestionsGame.Wheel
 
         #region Event Handlers
 
-        public void Handler(object sender, GameStartsEventArgs e)
+        public void Handler(object sender, States.StateChangedEventArgs e)
         {
+            if (e.StateType != States.StateType.WHEEL)
+                return;
+
             wheel.transform.eulerAngles = Vector3.zero;
             stop = false;
             List<Color> colors;

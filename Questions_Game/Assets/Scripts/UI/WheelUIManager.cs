@@ -5,11 +5,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using PizzaPie.QuestionsGame.Wheel;
-
+using PizzaPie.QuestionsGame.States;
 
 namespace PizzaPie.QuestionsGame.UI
 {
-    public class WheelUIManager : MonoBehaviour , Events.ISubscriber<GameStartsEventArgs> ,Events.ISubscriber<WheelStopSpinEventArgs>
+    public class WheelUIManager : MonoBehaviour , IState, Events.ISubscriber<WheelStopSpinEventArgs>
     {
         [SerializeField]
         private GameObject parentWindow;
@@ -25,44 +25,55 @@ namespace PizzaPie.QuestionsGame.UI
         private float categoryImgStayDuration;
         [SerializeField]
         private CanvasGroup canvasGroup;
-       
-        private void Start()
-        {
-            _Reset();
-            stopWheelButton.onClick.AddListener(OnStopButton);
-            parentWindow.SetActive(false);
 
-            Services.Instance.EventAggregator.Subscribe<GameStartsEventArgs>(this);
+        public StateType GetStateType => StateType.WHEEL;
+
+        private StateMachine stateMachine;
+
+        public void Init(StateMachine stateMachine)
+        {
+            parentWindow.SetActive(false);
+            this.stateMachine = stateMachine;
+            stopWheelButton.onClick.AddListener(OnStopButton);
             Services.Instance.EventAggregator.Subscribe<WheelStopSpinEventArgs>(this);
         }
 
-        public void Handler(object sender, GameStartsEventArgs e)
+        public void Enter()
         {
+            categoryImg.GetComponent<CanvasGroup>().alpha = 0;
+            canvasGroup.alpha = 0;
+
             parentWindow.SetActive(true);
             StartCoroutine(InitRoutine());
         }
 
+        public void Exit()
+        {
+            parentWindow.SetActive(false);
+
+        }
+
+        public void _Reset()
+        {
+        }
+
+        public void Interupt()
+        {
+        }
+
         public void Handler(object sender, WheelStopSpinEventArgs e)
         {
-            categoryImg.sprite = Services.Instance.QuestionsProvider.GetCategoryDefinition(e.QuestionCategory).Sprite;
+            var categoryDefinition = Services.Instance.QuestionsProvider.GetCategoryDefinition(e.QuestionCategory);
+            categoryImg.sprite = categoryDefinition.Sprite;
             e.CocurrentRoutine.AddRoutine(new System.Func<IEnumerator>(()=>CategoryImageFadeIn()));
-            e.CocurrentRoutine.AddOnFinishCallback(OnExit);
-        }
-
-        private void OnExit()
-        {
-            _Reset();
-            parentWindow.SetActive(false);
-        }
-
-        private void _Reset()
-        {
-            categoryImg.GetComponent<CanvasGroup>().alpha = 0;
-            canvasGroup.alpha = 0;
+            
+            stateMachine.SetBlackboardValue<Questions.CategoryDefinition>(categoryDefinition);
+            e.CocurrentRoutine.AddOnFinishCallback(()=>stateMachine.ChangeState(StateType.QUESTION));
         }
 
         private IEnumerator InitRoutine()
         {
+            stopWheelButton.interactable = false;
             yield return StartCoroutine(Utils.CanvasGroupFade(canvasGroup, initDelay, 1));
             stopWheelButton.interactable = true;
         }

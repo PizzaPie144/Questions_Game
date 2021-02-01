@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PizzaPie.QuestionsGame.Questions
 {
-    public struct CategoryDefinition 
+    public class CategoryDefinition 
     {
         public QuestionCategory Category { get; private set; }
         public Color Color { get; private set; }

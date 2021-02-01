@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using PizzaPie.QuestionsGame.States;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 namespace PizzaPie.QuestionsGame.UI
 {
-    public class EndGameUIManager : MonoBehaviour ,Events.ISubscriber<EndGameCocurrentEventArgs>
+    public class EndGameUIManager : MonoBehaviour ,States.IState
     {
         [SerializeField]
         private GameObject endGameUIParent;
@@ -29,39 +30,47 @@ namespace PizzaPie.QuestionsGame.UI
         [SerializeField]
         private AudioClip playAgainClip;
 
-        private void Start()
+        public StateType GetStateType => StateType.END_GAME;
+        private StateMachine stateMachine;
+
+        public void Init(StateMachine stateMachine)
         {
+            this.stateMachine = stateMachine;
             endGameUIParent.SetActive(false);
             playAgainButton.onClick.AddListener(OnPlayAgain);
-            Services.Instance.EventAggregator.Subscribe<EndGameCocurrentEventArgs>(this);
+        }
+
+        public void Enter()
+        {
+            canvasGroup.alpha = 0f;
+            endGameUIParent.SetActive(true);
+            bool isWin = stateMachine.GetBlackBoardValue<PizzaPie.QuestionsGame.Questions.AnswerPickedEventArgs>().IsRight;
+            Services.Instance.SoundService.PlayClip(isWin ? winClip : loseClip, QuestionsGame.Sound.AudioType.SOUND_FX);
+
+            endGameText.text = isWin ? winText : loseText;
+            StartCoroutine(Utils.CanvasGroupFade(canvasGroup, fadeDelay, 1));
+        }
+
+        public void Exit()
+        {
+            endGameUIParent.SetActive(false);
+        }
+
+        public void _Reset()
+        {
+        }
+
+        public void Interupt()
+        {
         }
 
         private void OnPlayAgain()
         {
-            Services.Instance.SoundService.PlayClip(playAgainClip, QuestionsGame.Sound.AudioType.SOUND_FX);
-            _Reset();
+            Services.Instance.SoundService.PlayClip(playAgainClip, Sound.AudioType.SOUND_FX);
             Services.Instance.EventAggregator.Invoke<PlayAgainEventArgs>(this, new PlayAgainEventArgs());
+            stateMachine.ChangeState(StateType.DIFFICULTY);
             endGameUIParent.SetActive(false);
         }
 
-        public void Handler(object sender, EndGameCocurrentEventArgs e)
-        {
-            endGameUIParent.SetActive(true);
-            Services.Instance.SoundService.PlayClip(e.IsWin ? winClip : loseClip, QuestionsGame.Sound.AudioType.SOUND_FX);
-
-            endGameText.text = e.IsWin ? winText : loseText;
-            e.CocurrentRoutine.AddRoutine(FadeInRoutine);
-        }
-
-        private IEnumerator FadeInRoutine()
-        {
-            yield return StartCoroutine(Utils.CanvasGroupFade(canvasGroup, fadeDelay, 1));
-        }
-
-        private void _Reset()
-        {
-            endGameUIParent.SetActive(false);
-            canvasGroup.alpha = 0;
-        }
     }
 }

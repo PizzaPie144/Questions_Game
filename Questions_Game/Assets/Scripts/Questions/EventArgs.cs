@@ -25,6 +25,17 @@ namespace PizzaPie.QuestionsGame.Questions
             IsRight = isRight;
             CocurrentRoutineHandler = cocurrentRoutineHandler;
         }
+
+        
+    }
+
+    public class AnswerPickedEventArgs : EventArgs
+    {
+        public bool IsRight { get; private set; }
+        public AnswerPickedEventArgs(bool isRight)
+        {
+            IsRight = isRight;
+        }
     }
 
 }
